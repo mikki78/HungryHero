@@ -32,12 +32,12 @@ package
 			screenWelcome.initialized();
 		}
 		
-		private function onChangeScreen(events:NavigationEvent):void
+		private function onChangeScreen(event:NavigationEvent):void
 		{
 			switch (event.params.id)
 			// TODO Auto Generated method stub
 			{
-				case "play";
+				case "play":
 					screenWelcome.disposeTemporarily();
 					screenInGame.initialize();
 					break;

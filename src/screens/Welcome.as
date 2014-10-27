@@ -17,7 +17,7 @@ package screens
 		
 		private var playBtn:Button;
 		private var aboutBtn:Button;
-		private var onMainMenuClick:Object;
+	
 		
 		public function Welcome()
 		{
@@ -62,19 +62,19 @@ package screens
 			this.addEventListener(Event.TRIGGERED, onMainMenuClick);
 		}
 		
-			private function onMainMenuClick(event:Event):void	
+		private function onMainMenuClick(event:Event):void	
 		{
 			var buttonClicked:Button = event.target as Button;
-			if((buttonClicked as Button) == playBtn);
+			if((buttonClicked as Button) == playBtn)
 			{
-				this.dispatchEvent(new NavigationEvent.CHANGE_SCREEN, {id: "play"}, true));
+				this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id:"play"}, true));
 			}
 		}
 		public function disposeTemporarily():void
 		{
 			this.visible = false;
 			
-			if(this.hasEventlistener(Event.ENTER_FRAME)) this.removeEventListener((Event.ENTER_FRAME, heroAnimation);
+			if(this.hasEventListener(Event.ENTER_FRAME)) this.removeEventListener(Event.ENTER_FRAME, heroAnimation);
 		}
 		public function initialized():void
 		{

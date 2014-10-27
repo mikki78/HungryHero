@@ -1,5 +1,8 @@
 package screens
 {
+	import flash.utils.getTimer;
+	
+	import objects.GameBackground;
 	import objects.Hero;
 	
 	import starling.display.Sprite;
@@ -7,7 +10,14 @@ package screens
 	
 	public class InGame extends Sprite
 	{
+		private var bg:GameBackground;
 		private var hero:Hero;
+		
+		private var timePrevious:Number;
+		private var timeCurrent:Number;
+		private var elapsed:Number;
+		
+		private var gameStage:String;
 		
 		public function InGame()
 		{
@@ -24,6 +34,10 @@ package screens
 		private function drawGame():void
 		{
 			// TODO Auto Generated method stub
+			bg = new GameBackground();
+			bg.speed = 50;
+			this.addChild(bg);
+			
 			hero = new Hero();
 			hero.x = stage.stageWidth/2;
 			hero.y = stage.stageHeight/2;
@@ -32,6 +46,26 @@ package screens
 		public function disposeTemporarily():void
 		{
 			this.visible = false;
+		}
+		public function initialize():void
+		{
+			this.visible = true;
+			
+			this.addEventListener(Event.ENTER_FRAME, checkElapsed);
+			
+			hero.x = -stage.stageWidth;
+			hero.y = stage.stageHeight * 0.5;
+			
+			gameState = "idle";
+		}
+		
+		private function checkElapsed(event.Event):void
+		{
+			timePrevious =timeCurrent;
+			timerCurrent = getTimer();
+			elapsed = (timeCurrent - timePrevious) * 0.001;
+			// TODO Auto Generated method stub
+			
 		}
 	}
 }
