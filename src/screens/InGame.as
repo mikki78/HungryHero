@@ -5,11 +5,13 @@ package screens
 	import objects.GameBackground;
 	import objects.Hero;
 	
+	import starling.display.Button;
 	import starling.display.Sprite;
 	import starling.events.Event;
 	
 	public class InGame extends Sprite
 	{
+		private var startButton:Button;
 		private var bg:GameBackground;
 		private var hero:Hero;
 		
@@ -17,7 +19,10 @@ package screens
 		private var timeCurrent:Number;
 		private var elapsed:Number;
 		
-		private var gameStage:String;
+		private var gameState:String;
+		private var playerSpeed:Number;
+		private var hitObstacle:Number = 0;
+		private const MIN_SPEED:Number = 650;
 		
 		public function InGame()
 		{
@@ -35,13 +40,18 @@ package screens
 		{
 			// TODO Auto Generated method stub
 			bg = new GameBackground();
-			bg.speed = 50;
+			
 			this.addChild(bg);
 			
 			hero = new Hero();
 			hero.x = stage.stageWidth/2;
 			hero.y = stage.stageHeight/2;
 			this.addChild(hero);
+			
+			startButton = new Button(Assets.getAtlas().getTexture("startButton"));
+			startButton.x = stage.stageWidth * 0.5 - startButton.width * 0.5;
+			startButton.y = stage.stageHeight * 0.5 - startButton.height * 0.5;
+			this.addChild(startButton);
 		}
 		public function disposeTemporarily():void
 		{
@@ -57,12 +67,62 @@ package screens
 			hero.y = stage.stageHeight * 0.5;
 			
 			gameState = "idle";
+			
+			playerSpeed = 0;
+			hitObstacle = 0;
+			
+			bg.speed = 0;
+			
+			startButton.addEventListener(Event.TRIGGERED, onStartButtonClick);
 		}
 		
-		private function checkElapsed(event.Event):void
+		private function onStartButtonClick(event:Event):void
+		{
+			// TODO Auto Generated method stub
+			startButton.visible = false;
+			startButton.removeEventListener(Event.TRIGGERED, onStartButtonClick);
+			
+			launchHero();
+		}
+		
+		private function launchHero():void
+		{
+			this.addEventListener(Event.ENTER_FRAME, onGameTick);
+		}
+		
+		private function onGameTick(event:Event):void
+		{
+			// TODO Auto Generated method stub
+			switch(gameState)
+			{
+				case "idle":
+					// Take off
+					if (hero.x < stage.stageWidth * 0.5 * 0.5)
+					{
+						hero.x += ((stage.stageWidth * 0.5 * 0.5 + 10) - hero.x) * 0.5;
+						hero.y = stage.stageHeight * 0.5;
+						
+						playerSpeed += (MIN_SPEED - playerSpeed) * 0.05;
+						bg.speed = playerSpeed * elapsed;
+					}
+					else
+					{
+						gameState = "flying";
+					}
+					break;
+				case "flying":
+					playerSpeed -= (playerSpeed - MIN_SPEED) * 0.01;
+					bg.speed * elapsed;
+					break;
+				case "over":
+					break;
+			}
+		}
+		
+		private function checkElapsed(event:Event):void
 		{
 			timePrevious =timeCurrent;
-			timerCurrent = getTimer();
+			timeCurrent = getTimer();
 			elapsed = (timeCurrent - timePrevious) * 0.001;
 			// TODO Auto Generated method stub
 			
