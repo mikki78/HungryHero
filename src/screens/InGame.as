@@ -31,7 +31,7 @@ package screens
 		
 		private var gameArea:Rectangle;
 		
-		private var obstaclesToAnimate:Vector.<Obstacle>;
+		private var obstaclesToAnimate:Vector.<Obstacles>;
 		
 		public function InGame()
 		{
@@ -86,7 +86,7 @@ package screens
 			scoreDistance = 0;
 			obstacleGapCount = 0;
 			
-			obstacleToAnimate = new Vector.<Obstacle>();
+			obstaclesToAnimate = new Vector.<Obstacles>();
 			
 			startButton.addEventListener(Event.TRIGGERED, onStartButtonClick);
 		}
@@ -176,7 +176,7 @@ package screens
 			// TODO Auto Generated method stub
 			if (obstacleGapCount < 1200)
 			{
-				obstacleGapCount += playerSpeed + elapsed;
+				obstacleGapCount += playerSpeed * elapsed;
 			}
 			else if (obstacleGapCount !=0)
 			{
@@ -189,7 +189,7 @@ package screens
 		private function createObstacle(type:Number, distance:Number):void
 		{
 			// TODO Auto Generated method stub
-			var obstacle:Obstacle = new Obstacle(type, distance, true, 300);
+			var obstacle:Obstacles = new Obstacles(type, distance, true, 300);
 			obstacle.x = stage.stageWidth;
 			this.addChild(obstacle);
 			

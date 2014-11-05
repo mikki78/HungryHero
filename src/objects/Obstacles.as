@@ -67,7 +67,7 @@ package objects
 			_position = value;
 		}
 
-		public function get alreadyHit(value:Boolean):void
+		public function get alreadyHit():Boolean
 		{
 			return _alreadyHit;
 			
@@ -145,7 +145,7 @@ package objects
 	
 			if (_type ==4)
 			{
-				obstacleAnimation = new MovieClip(Assets.getAtlas().getTexture("obstacles" + _type + "0"), 10);
+				obstacleAnimation = new MovieClip(Assets.getAtlas().getTextures("obstacle" + _type + "_0"), 10);
 				Starling.juggler.add(obstacleAnimation);
 				obstacleAnimation.x = 0;
 				obstacleAnimation.y = 0;
