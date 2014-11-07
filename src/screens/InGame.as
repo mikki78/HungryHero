@@ -5,12 +5,16 @@ package screens
 	
 	import objects.GameBackground;
 	import objects.Hero;
-	import objects.Obstacles;
+	import objects.Obstacle;
 	
 	import starling.display.Button;
 	import starling.display.Sprite;
 	import starling.events.Event;
+	import starling.events.Touch;
+	import starling.events.TouchEvent;
 	
+	import starling.utils.deg2rad;
+
 	public class InGame extends Sprite
 	{
 		private var startButton:Button;
@@ -31,7 +35,11 @@ package screens
 		
 		private var gameArea:Rectangle;
 		
-		private var obstaclesToAnimate:Vector.<Obstacles>;
+		private var touch:Touch;
+		private var touchX:Number;
+		private var touchY:Number;
+		
+		private var obstaclesToAnimate:Vector.<Obstacle>;
 		
 		public function InGame()
 		{
@@ -86,7 +94,7 @@ package screens
 			scoreDistance = 0;
 			obstacleGapCount = 0;
 			
-			obstaclesToAnimate = new Vector.<Obstacles>();
+			obstaclesToAnimate = new Vector.<Obstacle>();
 			
 			startButton.addEventListener(Event.TRIGGERED, onStartButtonClick);
 		}
@@ -102,7 +110,17 @@ package screens
 		
 		private function launchHero():void
 		{
+			this.addEventListener(TouchEvent.TOUCH, onTouch);
 			this.addEventListener(Event.ENTER_FRAME, onGameTick);
+		}
+		
+		private function onTouch(event:TouchEvent):void
+		{
+			// TODO Auto Generated method stub
+			touch = event.getTouch(stage);
+			
+			touchX = touch.globalX;
+			touchY = touch.globalY;
 		}
 		
 		private function onGameTick(event:Event):void
@@ -126,6 +144,32 @@ package screens
 					}
 					break;
 				case "flying":
+					
+					if(hitObstacle <= 0)
+					{
+						hero.y -= (hero.y - touchY) * 0.1;
+						
+						if(-(hero.y - touchY) < 150 && -(hero.y - touchY) > -150)
+						{
+							hero.rotation = deg2rad(-(hero.y - touchY) * 0.2);
+						}
+						
+						if (hero.y > gameArea.bottom - hero.height * 0.5)
+						{
+							hero.y = gameArea.bottom - hero.height * 0.5;
+							hero.rotation = deg2rad(0);
+						}
+						if(hero.y < gameArea.top + hero.height * 0.5)
+						{
+							hero.y = gameArea.top + hero.height * 0.5;
+							hero.rotation = deg2rad(0);
+						}
+					}
+					else
+					{
+						hitObstacle--;
+						cameraShake();
+					}
 					playerSpeed -= (playerSpeed - MIN_SPEED) * 0.01;
 					bg.speed * elapsed;
 					
@@ -141,14 +185,37 @@ package screens
 			}
 		}
 		
+		private function cameraShake():void
+		{
+			// TODO Auto Generated method stub
+			if (hitObstacle > 0)
+			{
+				this.x = Math.random() * hitObstacle;
+				this.y = Math.random() * hitObstacle;
+			}
+			else if (x != 0)
+			{
+				this.x = 0;
+				this.y = 0;
+			}
+		}
+		
 		private function animateObstacles():void
 		{
 			// TODO Auto Generated method stub
-			var obstacleToTrack:Obstacles;
+			var obstacleToTrack:Obstacle;
 			
 			for (var i:uint = 0;i<obstaclesToAnimate.length;i++)
 			{
 				obstacleToTrack = obstaclesToAnimate[i];
+				
+				if (obstacleToTrack.alreadyHit == false && obstacleToTrack.bounds.intersects(hero.bounds))
+				{
+					obstacleToTrack.alreadyHit = true;
+					obstacleToTrack.rotation = deg2rad(70);
+					hitObstacle = 30;
+					playerSpeed*= 0.5;
+				}
 				
 				if (obstacleToTrack.distance > 0)
 				{
@@ -189,11 +256,11 @@ package screens
 		private function createObstacle(type:Number, distance:Number):void
 		{
 			// TODO Auto Generated method stub
-			var obstacle:Obstacles = new Obstacles(type, distance, true, 300);
+			var obstacle:Obstacle = new Obstacle(type, distance, true, 300);
 			obstacle.x = stage.stageWidth;
 			this.addChild(obstacle);
 			
-			if (type >= 3)
+			if (type <= 3)
 			{
 				if (Math.random() > 0.5)
 				{

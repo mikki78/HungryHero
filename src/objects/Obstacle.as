@@ -7,7 +7,7 @@ package objects
 	import starling.events.Event;
 	
 	
-	public class Obstacles extends Sprite
+	public class Obstacle extends Sprite
 	{
 		
 		private var _type:int;
@@ -23,7 +23,7 @@ package objects
 		
 		
 		
-		public function Obstacles(_type:int, _distance:int, _watchOut:Boolean = true, _speed:int = 0)
+		public function Obstacle(_type:int, _distance:int, _watchOut:Boolean = true, _speed:int = 0)
 		{
 			super();
 			
@@ -143,7 +143,7 @@ package objects
 		private function createObstacleArt():void
 		{
 	
-			if (_type ==4)
+			if (_type == 4)
 			{
 				obstacleAnimation = new MovieClip(Assets.getAtlas().getTextures("obstacle" + _type + "_0"), 10);
 				Starling.juggler.add(obstacleAnimation);
